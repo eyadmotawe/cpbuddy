@@ -9,12 +9,14 @@ const API = axios.create({
   baseURL: "/api/v2",
 });
 
-export const executeCode = async (language, sourceCode) => {
+// stdin defaults to "" so single-run callers don't need to change.
+export const executeCode = async (language, sourceCode, stdin = "") => {
   const response = await API.post("/execute", {
     language: language,
     version: LANGUAGE_VERSIONS[language],
     // Piston accepts an array of files; we always send a single file.
     files: [{ content: sourceCode }],
+    stdin,          // forwarded to the running process as standard input
   });
   return response.data;
 };
